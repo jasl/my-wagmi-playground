@@ -1,4 +1,4 @@
-import { formatAmount, shorten } from '@did-network/dapp-sdk'
+import { shorten } from '@did-network/dapp-sdk'
 import { ReactNode } from 'react'
 import { useLocation } from 'react-router'
 import { Link, NavLink } from 'react-router-dom'
@@ -45,7 +45,7 @@ export const Header = ({ action }: { action?: ReactNode }) => {
         </div>
         <div className="flex items-center">
           <NavItem path="/" name="Home" />
-          <NavItem path="/playground" name="Playground" />
+          <NavItem path="/debug" name="Debug" />
         </div>
 
         <div className="flex items-center gap-2">
