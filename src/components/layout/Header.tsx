@@ -1,36 +1,67 @@
+import { formatAmount, shorten } from '@did-network/dapp-sdk'
 import { ReactNode } from 'react'
+import { useLocation } from 'react-router'
+import { Link, NavLink } from 'react-router-dom'
+import { useAccount } from 'wagmi'
+
+import { NetworkSwitcher } from '@/components/SwitchNetworks'
+import { Button } from '@/components/ui/button'
+import { WalletModal } from '@/components/WalletModal'
+
+export const NavItem = ({ path, name, icon }: any) => {
+  const location = useLocation()
+  const isActive = path === '/' ? location.pathname === path : location.pathname.startsWith(path)
+
+  return (
+    <NavLink
+      target={path.startsWith('http') ? '_blank' : undefined}
+      to={path}
+      className={`w-24 mr-6 py-3 text-center text-sm font-semibold hover:text-primary no-underline`}
+    >
+      <div className={`flex-center rounded py-2 ${isActive ? 'text-primary' : 'text-text2 hover:text-text1 '}`}>
+        {icon}
+        <div className="ml-1">{name}</div>
+      </div>
+    </NavLink>
+  )
+}
 
 export const Header = ({ action }: { action?: ReactNode }) => {
+  const { address } = useAccount()
+
+  const [show, setShow] = useState(false)
+
+  const toggleModal = (e: boolean) => {
+    setShow(e)
+  }
+
   return (
     <div className="h-16 border-b-1 border-white box-border">
-      <div className="max-w-6xl m-auto h-full flex justify-between items-center sm:px-8 lt-sm:px-4">
+      <div className="max-w-6xl m-auto h-full flex justify-between items-center">
         <div className="flex items-center font-bold cursor-pointer">
-          <span className="text-xl">Unoi</span>
-          <span className="flex-col-center ml-3 py-.25 px-1.5 text-xs text-#666 bg-white rounded-full font-light">
-            <span
-              style={
-                {
-                  backgroundImage: 'linear-gradient(270deg, #B4EAA1 0%, #F8D07A 100%)',
-                  display: 'inline-block',
-                  lineHeight: 1,
-                  WebkitTextFillColor: 'transparent',
-                } as any
-              }
-              className="bg-clip-text"
-            >
-              fisand
-            </span>
-          </span>
+          <Link className="text-xl" to="/">
+            Playground
+          </Link>
         </div>
+        <div className="flex items-center">
+          <NavItem path="/" name="Home" />
+          <NavItem path="/playground" name="Playground" />
+        </div>
+
         <div className="flex items-center gap-2">
           {action}
-          <a
-            href="https://github.com/fisand/vite-antd-seed"
-            target="_blank"
-            className="flex-col-center text-primary transition-all hover:scale-95"
-          >
-            <span className="inline-flex w-8 h-8 i-carbon:logo-github"></span>
-          </a>
+
+          <NetworkSwitcher />
+          <WalletModal open={show} onOpenChange={toggleModal} close={() => setShow(false)}>
+            {({ isLoading }) => (
+              <Button className="flex items-center h-8 mr-4" size="sm">
+                {isLoading && (
+                  <span className="i-line-md:loading-twotone-loop inline-flex mr-1 w-4 h-4 text-white"></span>
+                )}{' '}
+                {address ? shorten(address) : 'Connect Wallet'}
+              </Button>
+            )}
+          </WalletModal>
         </div>
       </div>
     </div>

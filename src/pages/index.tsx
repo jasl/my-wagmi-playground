@@ -1,24 +1,10 @@
-import { formatAmount, shorten } from '@did-network/dapp-sdk'
-import { useAccount } from 'wagmi'
-
 import { Header } from '@/components/layout/Header'
-import { NetworkSwitcher } from '@/components/SwitchNetworks'
-import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { useToast } from '@/components/ui/use-toast'
-import { WalletModal } from '@/components/WalletModal'
 import { useWagmi } from '@/hooks'
 import { useCopyToClipboard } from '@/hooks/useCopy'
 
 const Home = () => {
-  const { address } = useAccount()
-
-  const [show, setShow] = useState(false)
-
-  const toggleModal = (e: boolean) => {
-    setShow(e)
-  }
-
   const [_, copy] = useCopyToClipboard()
   const { toast } = useToast()
 
@@ -32,23 +18,6 @@ const Home = () => {
 
   return (
     <>
-      <Header
-        action={
-          <>
-            <NetworkSwitcher />
-            <WalletModal open={show} onOpenChange={toggleModal} close={() => setShow(false)}>
-              {({ isLoading }) => (
-                <Button className="flex items-center h-8 mr-4" size="sm">
-                  {isLoading && (
-                    <span className="i-line-md:loading-twotone-loop inline-flex mr-1 w-4 h-4 text-white"></span>
-                  )}{' '}
-                  {address ? shorten(address) : 'Connect Wallet'}
-                </Button>
-              )}
-            </WalletModal>
-          </>
-        }
-      />
       <div className="relative max-w-6xl min-h-[calc(100vh-8rem)] m-auto pt-16 flex-col-center justify-start">
         <p
           className="font-bold bg-clip-text text-4xl lt-sm:text-2xl"
@@ -148,24 +117,6 @@ const Home = () => {
           </div>
         </div>
       </div>
-      <p className="py-5 text-center">
-        <a className="App-link" href="https://wagmi.sh/" target="_blank" rel="noopener noreferrer">
-          Wagmi Docs
-        </a>
-        {' | '}
-        <a className="App-link" href="https://vitejs.dev/guide/features.html" target="_blank" rel="noopener noreferrer">
-          Vite Docs
-        </a>
-        {' | '}
-        <a className="App-link" href="https://unocss.dev/" target="_blank" rel="noopener noreferrer">
-          Unocss Docs
-        </a>
-      </p>
-      <p>
-        {['', '', '', ''].map((_, index) => (
-          <Item key={index} />
-        ))}
-      </p>
     </>
   )
 }

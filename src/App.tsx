@@ -1,6 +1,8 @@
 import { useEffect } from 'react'
 import { useNavigate, useRoutes } from 'react-router-dom'
 
+import { Footer } from '@/components/layout/Footer'
+import { Header } from '@/components/layout/Header'
 import { Toast, ToastClose, ToastDescription, ToastProvider, ToastTitle, ToastViewport } from '@/components/ui/toast'
 import { useToast } from '@/components/ui/use-toast'
 import routes from '~react-pages'
@@ -17,7 +19,10 @@ function App() {
   const { toasts } = useToast()
   return (
     <>
+      <Header />
       {useRoutes([...routes, { path: '*', element: <Redirect to="/" /> }])}
+      <Footer />
+
       <ToastProvider duration={2000}>
         {toasts.map(function ({ id, title, description, action, ...props }) {
           return (
