@@ -11,6 +11,9 @@
   "dependencies": {
     "@did-network/dapp-sdk": "^0.1.9",
     "@ethersproject/abi": "^5.7.0",
+    "@polkadot/keyring": "^12.3.2",
+    "@polkadot/util": "^12.3.2",
+    "@polkadot/util-crypto": "^12.3.2",
     "@radix-ui/react-dialog": "^1.0.4",
     "@radix-ui/react-select": "^1.2.2",
     "@radix-ui/react-slot": "^1.0.2",
