@@ -7,7 +7,7 @@ import IconsResolver from 'unplugin-icons/resolver'
 import Icons from 'unplugin-icons/vite'
 import { defineConfig, loadEnv } from 'vite'
 import Checker from 'vite-plugin-checker'
-import eslint from 'vite-plugin-eslint2'
+import eslint from 'vite-plugin-eslint'
 import nodePolyfills from 'vite-plugin-node-stdlib-browser'
 import Pages from 'vite-plugin-pages'
 
