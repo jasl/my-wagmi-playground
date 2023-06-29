@@ -1,3 +1,6 @@
+import { hexToU8a } from '@polkadot/util'
+import { blake2AsU8a, encodeAddress, secp256k1Compress } from '@polkadot/util-crypto'
+import { useState } from 'react'
 import { hashMessage, recoverPublicKey } from 'viem'
 import { useAccount, useSignMessage } from 'wagmi'
 
@@ -10,10 +13,17 @@ const Debug = () => {
   const hashedMessage = hashMessage(message)
   const { data: messageSignature, signMessage } = useSignMessage({ message })
   const [evmPublicKey, setPublicKey] = useState<string | undefined>(undefined)
+  const [subAddress, setSubAddress] = useState<string | undefined>(undefined)
 
   useEffect(() => {
     if (messageSignature) {
-      recoverPublicKey({ hash: hashedMessage, signature: messageSignature }).then(setPublicKey)
+      recoverPublicKey({ hash: hashedMessage, signature: messageSignature }).then((recoveredPublicKey) => {
+        setPublicKey(recoveredPublicKey)
+
+        const compressedEvmPublicKey = secp256k1Compress(hexToU8a(recoveredPublicKey))
+        const subAddressFromEvmPublicKey = encodeAddress(blake2AsU8a(compressedEvmPublicKey), 42)
+        setSubAddress(subAddressFromEvmPublicKey)
+      })
     }
   }, [hashedMessage, messageSignature])
 
@@ -42,6 +52,10 @@ const Debug = () => {
           <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
             <dt className="text-sm font-medium leading-6 text-gray-900">EVM public key</dt>
             <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{evmPublicKey}</dd>
+          </div>
+          <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+            <dt className="text-sm font-medium leading-6 text-gray-900">Substrate address</dt>
+            <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{subAddress}</dd>
           </div>
         </dl>
       </div>

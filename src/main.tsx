@@ -33,27 +33,6 @@ const { chains, publicClient, webSocketPublicClient } = configureChains(
 
 const config = createConfig({
   autoConnect: true,
-  connectors: [
-    new MetaMaskConnector({ chains }),
-    new WalletConnectConnector({
-      options: {
-        projectId: 'f18c88f1b8f4a066d3b705c6b13b71a8',
-      },
-    }),
-    new WalletConnectLegacyConnector({
-      chains,
-      options: {
-        qrcode: true,
-      },
-    }),
-    new InjectedConnector({
-      chains,
-      options: {
-        name: 'BitKeep',
-        getProvider: () => (typeof window !== 'undefined' ? (window as any).bitkeep?.ethereum : undefined),
-      },
-    }),
-  ],
   publicClient,
   webSocketPublicClient,
 })
