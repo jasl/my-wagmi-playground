@@ -2,7 +2,7 @@ import { hexToU8a } from '@polkadot/util'
 import { blake2AsU8a, encodeAddress, secp256k1Compress } from '@polkadot/util-crypto'
 import { useState } from 'react'
 import { hashMessage, recoverPublicKey } from 'viem'
-import { useAccount, useSignMessage } from 'wagmi'
+import { useAccount, useSignMessage, useSignTypedData } from 'wagmi'
 
 import { Button } from '@/components/ui/button'
 
@@ -26,6 +26,36 @@ const Debug = () => {
       })
     }
   }, [hashedMessage, messageSignature])
+
+  // All properties on a domain are optional
+  const domain = {
+    name: 'Substrate',
+    version: '1',
+    chainId: 0,
+    verifyingContract: '0x0000000000000000000000000000000000000000',
+  } as const
+
+  // The named list of all type definitions
+  const types = {
+    SubstrateCall: [
+      { name: 'who', type: 'string' },
+      { name: 'callData', type: 'bytes' },
+      { name: 'nonce', type: 'uint64' },
+    ],
+  } as const
+
+  const payload = {
+    who: subAddress as string,
+    callData: '0x00071448656c6c6f', // system.remarkWithEvent("Hello")
+    nonce: BigInt('0'),
+  } as const
+
+  const { data, isError, isLoading, isSuccess, signTypedData } = useSignTypedData({
+    domain,
+    message: payload,
+    primaryType: 'SubstrateCall',
+    types,
+  })
 
   return (
     <div className="relative max-w-6xl min-h-[calc(100vh-8rem)] m-auto pt-16 justify-start">
@@ -58,6 +88,14 @@ const Debug = () => {
             <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{subAddress}</dd>
           </div>
         </dl>
+      </div>
+
+      <div>
+        <button disabled={isLoading} onClick={() => signTypedData()}>
+          Sign typed data
+        </button>
+        {isSuccess && <div>Signature: {data}</div>}
+        {isError && <div>Error signing message</div>}
       </div>
     </div>
   )
